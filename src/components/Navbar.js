@@ -8,12 +8,28 @@ import {
 import { MdHome } from "react-icons/md";
 import { useContextData } from "../Global/Context";
 const Navbar = () => {
-  const { model, openModel } = useContextData();
+  const { model, openModel, user, loader, logout } = useContextData();
   console.log("my model", model);
   const openForms = () => {
     openModel();
   };
-
+  const userLogout = () => {
+    logout();
+  };
+  const checkUser = () => {
+    return !loader ? (
+      !loader && user ? (
+        <li>
+          {user.displayName}/ <span onClick={userLogout}>logout</span>
+          {""}
+        </li>
+      ) : (
+        <li onClick={openForms}>Register/Login</li>
+      )
+    ) : (
+      "..."
+    );
+  };
   return (
     <div className="navbar">
       <div className="navbar__first">
@@ -45,7 +61,8 @@ const Navbar = () => {
         <li>
           <FaRegHeart className="navbar__icons" />
         </li>
-        <li onClick={openForms}>Register/Login</li>
+
+        {checkUser()}
       </div>
     </div>
   );

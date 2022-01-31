@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { ContextProvider, useContextData } from "../Global/Context";
+
+import { useContextData } from "../Global/Context";
 const Model = () => {
-  const { model } = useContextData();
+  const { model, closeModel, register, login } = useContextData();
   const [state, setState] = useState({
     register: true,
     login: false,
   });
+  const [inputs, setInputs] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const handleInput = (e) => {
+    setInputs({ ...inputs, [e.target.name]: e.target.value });
+  };
   const formsToggle = () => {
     setState({
       ...state,
@@ -13,48 +22,116 @@ const Model = () => {
       login: !state.login,
     });
   };
+  const closeForm = (e) => {
+    const className = e.target.getAttribute("class");
+    if (className === "model") {
+      closeModel();
+    }
+  };
+  const registerUser = (e) => {
+    e.preventDefault();
+
+    register(inputs);
+    setInputs({ username: "", email: "", password: "" });
+  };
+  const userLogin = (e) => {
+    e.preventDefault();
+    login(inputs);
+  };
   return (
     <>
       {model ? (
-        <div className="model">
+        <div className="model" onClick={closeForm}>
           <div className="model__container">
-            <div className="model__form">
-              <form>
-                <div className="model__group">
-                  <img src="/images/instagramLogo.png" alt="" />
-                </div>
-                <div className="model__group">
-                  <input
-                    type="text"
-                    name="username"
-                    class="model__input"
-                    placeholder="Username..."
-                  />
-                </div>
-                <div className="model__group">
-                  <input
-                    type="email"
-                    name="email"
-                    class="model__input"
-                    placeholder="Email..."
-                  />
-                </div>
-                <div className="model__group">
-                  <input
-                    type="password"
-                    name="password"
-                    class="model__input"
-                    placeholder="Create password..."
-                  />
-                </div>
-                <div className="model__group">
-                  <input type="submit" value="Register" class="btn btn-smart" />
-                </div>
-                <div className="model__group">
-                  <span onClick={formsToggle}>Already have an account ?</span>
-                </div>
-              </form>
-            </div>
+            {state.register ? (
+              <div className="model__form">
+                <form onSubmit={registerUser}>
+                  <div className="model__group">
+                    <img src="/images/instagramLogo.png" alt="" />
+                  </div>
+                  <div className="model__group">
+                    <input
+                      type="text"
+                      name="username"
+                      className="model__input"
+                      placeholder="Username..."
+                      onChange={handleInput}
+                      value={inputs.username}
+                      required
+                    />
+                  </div>
+                  <div className="model__group">
+                    <input
+                      type="email"
+                      name="email"
+                      className="model__input"
+                      placeholder="Email..."
+                      onChange={handleInput}
+                      value={inputs.email}
+                      required
+                    />
+                  </div>
+                  <div className="model__group">
+                    <input
+                      type="password"
+                      name="password"
+                      className="model__input"
+                      placeholder="Create password..."
+                      onChange={handleInput}
+                      value={inputs.password}
+                      required
+                    />
+                  </div>
+                  <div className="model__group">
+                    <input
+                      type="submit"
+                      value="Register"
+                      className="btn btn-smart"
+                    />
+                  </div>
+                  <div className="model__group">
+                    <span onClick={formsToggle}>Already have an account ?</span>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <div className="model__form">
+                <form onSubmit={userLogin}>
+                  <div className="model__group">
+                    <img src="/images/instagramLogo.png" alt="" />
+                  </div>
+
+                  <div className="model__group">
+                    <input
+                      type="email"
+                      name="email"
+                      className="model__input"
+                      placeholder="Email..."
+                      onChange={handleInput}
+                      value={inputs.email}
+                      required
+                    />
+                  </div>
+                  <div className="model__group">
+                    <input
+                      type="password"
+                      name="password"
+                      className="model__input"
+                      placeholder="Create password..."
+                      onChange={handleInput}
+                      value={inputs.password}
+                      required
+                    />
+                  </div>
+                  <div className="model__group">
+                    <input type="submit" value="Login" class="btn btn-smart" />
+                  </div>
+                  <div className="model__group">
+                    <span onClick={formsToggle}>Create a new account</span>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       ) : (
